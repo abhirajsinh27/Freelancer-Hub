@@ -76,6 +76,7 @@ function FreelancerDashboard() {
                 budget={project.budget}
                 skills={project.skills}
                 isBid={isBid}
+                deadline={project.deadline}
                 onBid={() => handleBid(project)}
               />
             );
