@@ -10,6 +10,7 @@ import "./App.css";
 import ProjectBids from "./Pages/Client/ProjectBids";
 import MyBids from "./Pages/Freelancer/MyBids";
 import AssignedProjects from "./Pages/Freelancer/AssignedProjects";
+import Profile from "./Components/profile";
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
 
       {/* After Login */}
       <Route path="/" element={<RoleRedirect />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Client Routes */}
       <Route
