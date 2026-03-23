@@ -21,18 +21,9 @@ function Header() {
         {/* Left Section */}
         <div className="flex items-center gap-4 ">
           <h1 className="text-2xl font-bold text-white tracking-wide">
-            Freelance<span className="text-indigo-500">Hub</span>
+            Freelancer<span className="text-indigo-500">Hub</span>
           </h1>
-
-          {user?.role && (
-            <span className={`px-3 py-1 text-xs rounded-full font-semibold
-              ${user?.role === "client"
-                ? "bg-green-500/20 text-green-400"
-                : "bg-indigo-500/20 text-indigo-400"
-              }`}>
-              {user?.role.toUpperCase()}
-            </span>
-          )}
+          
         </div>
 
         {/* Center Navigation */}

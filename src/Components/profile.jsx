@@ -1,9 +1,14 @@
 import { useAuth } from "../Context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import Header from "../Components/Header";
-import { Edit, MapPin, Mail, Briefcase, Star } from "lucide-react";
+import { Edit, MapPin, Mail, Star } from "lucide-react";
+import { listenBidsByFreelancer } from "../Services/bidService";
+import {
+  listenAssignedProjects,
+  listenProjectsByClient,
+} from "../Services/projectService";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -14,8 +19,34 @@ export default function Profile() {
   const [location, setLocation] = useState(user?.location || "");
   const [skills, setSkills] = useState(user?.skills || []);
   const [skillInput, setSkillInput] = useState("");
+  const [bids, setBids] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [assignedProjects, setAssignedProjects] = useState([]);
 
   if (!user) return null;
+  // 🔥 REALTIME DATA FETCHING
+  useEffect(() => {
+    if (!user) return;
+
+    let unsubscribe;
+    if (user.role === "freelancer") {
+      // get bids
+      const unsubBids = listenBidsByFreelancer(user.uid, setBids);
+      // get assigned projects
+      const unsubAssigned = listenAssignedProjects(
+        user.uid,
+        setAssignedProjects,
+      );
+      return () => {
+        unsubBids();
+        unsubAssigned();
+      };
+    }
+    if (user.role === "client") {
+      unsubscribe = listenProjectsByClient(user.uid, setProjects);
+      return () => unsubscribe();
+    }
+  }, [user]);
 
   // 🔥 SAVE PROFILE
   const handleSave = async () => {
@@ -35,19 +66,45 @@ export default function Profile() {
     }
   };
 
+  const completion =
+    (bio ? 25 : 0) +
+    (skills.length ? 25 : 0) +
+    (location ? 25 : 0) +
+    (user.photoURL ? 25 : 0);
+
+  const stats =
+    user.role === "freelancer"
+      ? [
+          { label: "Bids", value: bids.length },
+          { label: "Active Projects", value: assignedProjects.length },
+          {
+            label: "Accepted",
+            value: bids.filter((b) => b.status === "accepted").length,
+          },
+        ]
+      : [
+          { label: "Projects", value: projects.length },
+          {
+            label: "Open",
+            value: projects.filter((p) => p.status === "open").length,
+          },
+          {
+            label: "Closed",
+            value: projects.filter((p) => p.status === "closed").length,
+          },
+        ];
+
   return (
     <div className="bg-slate-900 min-h-screen text-white">
       <Header />
 
       {/* ================= PROFILE CARD ================= */}
       <div className="max-w-5xl mx-auto mt-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-lg overflow-hidden">
-
         {/* Banner */}
         <div className="h-40 bg-linear-to-r from-indigo-600 to-blue-600"></div>
 
         {/* Profile Info */}
         <div className="p-6 relative">
-
           {/* Avatar */}
           <div className="absolute -top-16 left-6">
             <div className="w-32 h-32 rounded-full bg-indigo-600 flex items-center justify-center text-4xl font-bold border-4 border-slate-900 shadow-md">
@@ -71,10 +128,22 @@ export default function Profile() {
             <h2 className="text-2xl font-bold">{user.username}</h2>
             <p className="text-slate-400 capitalize">{user.role}</p>
           </div>
+          {/* Profile Completion */}
+          <div className="mt-4">
+            <p className="text-sm text-slate-400 mb-1">
+              Profile Completion: {completion}%
+            </p>
+
+            <div className="w-full bg-white/10 rounded-full h-2">
+              <div
+                className="bg-indigo-500 h-2 rounded-full transition-all"
+                style={{ width: `${completion}%` }}
+              ></div>
+            </div>
+          </div>
 
           {/* Info Row */}
           <div className="flex flex-wrap gap-6 mt-4 text-slate-400">
-
             {/* Location */}
             {isEditing ? (
               <input
@@ -93,10 +162,6 @@ export default function Profile() {
             <span className="flex items-center gap-2">
               <Mail size={16} /> {user.email}
             </span>
-
-            <span className="flex items-center gap-2">
-              <Briefcase size={16} /> Available
-            </span>
           </div>
 
           {/* Bio */}
@@ -108,9 +173,7 @@ export default function Profile() {
                 className="w-full bg-white/10 p-3 rounded-lg"
               />
             ) : (
-              <p className="text-slate-300">
-                {bio || "Add your bio"}
-              </p>
+              <p className="text-slate-300">{bio || "Add your bio"}</p>
             )}
           </div>
 
@@ -121,15 +184,25 @@ export default function Profile() {
                 skills.map((skill, i) => (
                   <span
                     key={i}
-                    className="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-sm"
+                    className="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-sm flex items-center gap-2"
                   >
                     {skill}
+
+                    {/* 🔥 REMOVE BUTTON */}
+                    {isEditing && (
+                      <button
+                        onClick={() =>
+                          setSkills(skills.filter((_, index) => index !== i))
+                        }
+                        className="text-red-400 hover:text-red-500 text-xs"
+                      >
+                        ✕
+                      </button>
+                    )}
                   </span>
                 ))
               ) : (
-                <span className="text-slate-400 text-sm">
-                  Add skills
-                </span>
+                <p className="text-slate-400 text-sm">No skills added yet</p>
               )}
             </div>
 
@@ -171,13 +244,11 @@ export default function Profile() {
 
       {/* ================= STATS ================= */}
       <div className="max-w-5xl mx-auto mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        {[
-          { label: "Projects", value: 0 },
-          { label: "Bids", value:  0},
-          { label: "Rating", value: "4.8" },
-        ].map((stat, index) => (
-          <div key={index} className="bg-white/5 p-6 rounded-xl border border-white/10 text-center">
+        {stats.map((stat, index) => (
+          <div
+            key={index}
+            className="bg-white/5 p-6 rounded-xl border border-white/10 text-center"
+          >
             <h3 className="text-xl font-bold">{stat.value}</h3>
             <p className="text-slate-400">{stat.label}</p>
           </div>
@@ -186,38 +257,55 @@ export default function Profile() {
 
       {/* ================= PORTFOLIO ================= */}
       <div className="max-w-5xl mx-auto mt-6 bg-white/5 p-6 rounded-xl border border-white/10">
-        <h3 className="text-xl font-bold mb-4">Portfolio</h3>
+        <h3 className="text-xl font-bold mb-4">
+          {user.role === "freelancer" ? "Work History" : "My Projects"}
+        </h3>
 
         <div className="grid md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((item) => (
-            <div key={item} className="border border-white/10 rounded-lg overflow-hidden hover:shadow-lg">
-              <div className="h-40 bg-slate-700"></div>
-              <div className="p-3">
-                <h4 className="font-semibold">Project {item}</h4>
-                <p className="text-sm text-slate-400">React + Firebase App</p>
-              </div>
-            </div>
-          ))}
+         {user.role === "freelancer" &&
+  assignedProjects.map((project) => (
+    <div
+      key={project.id}
+      className="border border-white/10 rounded-lg overflow-hidden hover:shadow-lg"
+    >
+      <div className="h-40 bg-slate-700"></div>
+
+      <div className="p-3">
+        <h4 className="font-semibold">{project.title}</h4>
+
+        <p className="text-sm text-slate-400">
+          {project.skills?.join(", ") || "No skills"}
+        </p>
+      </div>
+    </div>
+  ))}
+          {user.role === "client" &&
+  projects.map((project) => (
+    <div
+      key={project.id}
+      className="border border-white/10 rounded-lg overflow-hidden hover:shadow-lg"
+    >
+      <div className="h-40 bg-slate-700"></div>
+
+      <div className="p-3">
+        <h4 className="font-semibold">{project.title}</h4>
+
+        <p className="text-sm text-slate-400">
+          {project.skills?.join(", ") || "No skills"}
+        </p>
+      </div>
+    </div>
+  ))}
+  {user.role === "freelancer" && assignedProjects.length === 0 && (
+  <p className="text-slate-400">No projects assigned yet</p>
+)}
+
+{user.role === "client" && projects.length === 0 && (
+  <p className="text-slate-400">No projects created yet</p>
+)}
         </div>
       </div>
-
-      {/* ================= REVIEWS ================= */}
-      <div className="max-w-5xl mx-auto mt-6 bg-white/5 p-6 rounded-xl border border-white/10">
-        <h3 className="text-xl font-bold mb-4">Reviews</h3>
-
-        {[1, 2].map((review) => (
-          <div key={review} className="border-b border-white/10 py-3">
-            <div className="flex items-center gap-2">
-              <Star size={16} className="text-yellow-400" />
-              <span className="font-semibold">5.0</span>
-            </div>
-            <p className="text-slate-400 mt-1">
-              Great work! Delivered on time.
-            </p>
-          </div>
-        ))}
-      </div>
-
+      
     </div>
   );
 }
