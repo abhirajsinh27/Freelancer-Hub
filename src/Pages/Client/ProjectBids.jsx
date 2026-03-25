@@ -12,7 +12,7 @@ function ProjectBids() {
   const { projectId } = useParams();
   const { user } = useAuth();
   const [bids, setBids] = useState([]);
-  const acceptedBid = bids.find(b => b.status === "accepted");
+  const acceptedBid = bids.find((b) => b.status === "accepted");
 
   useEffect(() => {
     if (!projectId) return;
@@ -38,6 +38,8 @@ function ProjectBids() {
       await updateProjectStatus(projectId, {
         status: "in-progress",
         assignedFreelancerId: selectedBid.freelancerId,
+        progress: "",
+        submission: "",
       });
     } catch (error) {
       console.error("Accept error:", error);

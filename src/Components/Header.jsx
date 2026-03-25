@@ -51,6 +51,17 @@ function Header() {
               >
                 Post Project
               </NavLink>
+              <NavLink
+                to="/client/Track-Projects"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-indigo-400"
+                    : "text-slate-300 hover:text-white transition"
+                }
+              >
+                Track Projects
+              </NavLink>
+
             </>
           )}
 

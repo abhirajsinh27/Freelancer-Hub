@@ -256,55 +256,85 @@ export default function Profile() {
       </div>
 
       {/* ================= PORTFOLIO ================= */}
-      <div className="max-w-5xl mx-auto mt-6 bg-white/5 p-6 rounded-xl border border-white/10">
-        <h3 className="text-xl font-bold mb-4">
-          {user.role === "freelancer" ? "Work History" : "My Projects"}
-        </h3>
+     <div className="max-w-5xl mx-auto mt-6 bg-white/5 p-6 rounded-xl border border-white/10">
+  
+  {/* TITLE */}
+  <h3 className="text-xl font-bold mb-4">
+    {user.role === "freelancer" ? "Work History" : "My Projects"}
+  </h3>
 
-        <div className="grid md:grid-cols-3 gap-4">
-         {user.role === "freelancer" &&
-  assignedProjects.map((project) => (
-    <div
-      key={project.id}
-      className="border border-white/10 rounded-lg overflow-hidden hover:shadow-lg"
-    >
-      <div className="h-40 bg-slate-700"></div>
+  <div className="grid md:grid-cols-3 gap-4">
 
-      <div className="p-3">
-        <h4 className="font-semibold">{project.title}</h4>
+    {/* ================= FREELANCER ================= */}
+    {user.role === "freelancer" &&
+      assignedProjects.map((project) => (
+        <div
+          key={project.id}
+          className="border border-white/10 rounded-lg p-4 hover:shadow-lg hover:shadow-indigo-500/10 transition"
+        >
+          <h4 className="font-semibold text-lg text-white">
+            {project.title}
+          </h4>
 
-        <p className="text-sm text-slate-400">
-          {project.skills?.join(", ") || "No skills"}
-        </p>
-      </div>
-    </div>
-  ))}
-          {user.role === "client" &&
-  projects.map((project) => (
-    <div
-      key={project.id}
-      className="border border-white/10 rounded-lg overflow-hidden hover:shadow-lg"
-    >
-      <div className="h-40 bg-slate-700"></div>
+          <p className="text-sm text-slate-400 mt-1">
+            {project.skills?.join(", ") || "No skills"}
+          </p>
 
-      <div className="p-3">
-        <h4 className="font-semibold">{project.title}</h4>
+          {/* Budget */}
+          <p className="text-indigo-400 text-sm mt-2">
+            ₹ {project.budget || "N/A"}
+          </p>
 
-        <p className="text-sm text-slate-400">
-          {project.skills?.join(", ") || "No skills"}
-        </p>
-      </div>
-    </div>
-  ))}
-  {user.role === "freelancer" && assignedProjects.length === 0 && (
-  <p className="text-slate-400">No projects assigned yet</p>
-)}
-
-{user.role === "client" && projects.length === 0 && (
-  <p className="text-slate-400">No projects created yet</p>
-)}
+          {/* Status */}
+          <span className="inline-block mt-2 text-xs bg-indigo-500/20 px-2 py-1 rounded text-indigo-300">
+            {project.status}
+          </span>
         </div>
-      </div>
+      ))}
+
+    {/* ================= CLIENT ================= */}
+    {user.role === "client" &&
+      projects.map((project) => (
+        <div
+          key={project.id}
+          className="border border-white/10 rounded-lg p-4 hover:shadow-lg hover:shadow-green-500/10 transition"
+        >
+          <h4 className="font-semibold text-lg text-white">
+            {project.title}
+          </h4>
+
+          <p className="text-sm text-slate-400 mt-1">
+            {project.skills?.join(", ") || "No skills"}
+          </p>
+
+          {/* Budget */}
+          <p className="text-green-400 text-sm mt-2">
+            ₹ {project.budget || "N/A"}
+          </p>
+
+          {/* Status */}
+          <span className="inline-block mt-2 text-xs bg-green-500/20 px-2 py-1 rounded text-green-300">
+            {project.status}
+          </span>
+        </div>
+      ))}
+
+  </div>
+
+  {/* ================= EMPTY STATES ================= */}
+  {user.role === "freelancer" && assignedProjects.length === 0 && (
+    <p className="text-slate-400 mt-4">
+      No projects assigned yet
+    </p>
+  )}
+
+  {user.role === "client" && projects.length === 0 && (
+    <p className="text-slate-400 mt-4">
+      No projects created yet
+    </p>
+  )}
+
+</div>
       
     </div>
   );

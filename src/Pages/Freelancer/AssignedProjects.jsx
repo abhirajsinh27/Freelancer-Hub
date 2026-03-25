@@ -1,12 +1,26 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { listenAssignedProjects } from "../../Services/projectService";
 import { useAuth } from "../../Context/AuthContext";
 import Header from "../../Components/Header";
-import ProjectCard from "../../Components/ProjectCard";
 
 function AssignedProjects() {
   const { user } = useAuth();
   const [projects, setProjects] = useState([]);
+  const [submission, setSubmission] = useState({});
+  const [progress, setProgress] = useState({});
+
+  const handleUpdateProgress = async (projectId) => {
+    await updateProjectStatus(projectId, {
+      progress : progress[projectId] || "",
+    });
+  };
+
+  const handleSubmitWork = async (projectId) => {
+    await updateProjectStatus(projectId, {
+      submission : submission[projectId] || "",
+      status: "submitted",
+    });
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -27,22 +41,100 @@ function AssignedProjects() {
           Assigned Projects
         </h2>
 
-        {projects.length === 0 ? (
-          <p className="text-slate-400">
-            No assigned projects yet.
+        <div className="space-y-6">
+  {projects.map((project) => (
+    <div
+      key={project.id}
+      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-lg hover:shadow-indigo-500/10 transition"
+    >
+
+      {/* ================= HEADER ================= */}
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-xl font-semibold text-white">
+            {project.title}
+          </h3>
+
+          <p className="text-slate-400 text-sm mt-1">
+            {project.description || "No description provided"}
           </p>
-        ) : (
-          projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              title={project.title}
-              budget={project.budget}
-              skills={project.skills}
-              deadline={project.deadline}
-              userRole="freelancer"
-            />
-          ))
-        )}
+        </div>
+
+        <span className="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-sm">
+          ₹{project.budget}
+        </span>
+      </div>
+
+      {/* ================= SKILLS ================= */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {project.skills?.map((skill, i) => (
+          <span
+            key={i}
+            className="bg-slate-700 text-slate-300 text-xs px-3 py-1 rounded-full"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      {/* ================= META ================= */}
+      <div className="flex justify-between text-sm text-slate-400 mb-4">
+        <span>Deadline: {project.deadline || "N/A"}</span>
+
+        <span className="bg-indigo-500/20 px-2 py-1 rounded text-indigo-300">
+          {project.status}
+        </span>
+      </div>
+
+      {/* ================= PROGRESS SECTION ================= */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-4">
+        <h4 className="text-sm text-indigo-400 mb-2">
+          Update Progress
+        </h4>
+
+        <textarea
+          placeholder="Write what you have completed..."
+          className="w-full bg-white/10 p-3 rounded-lg text-sm outline-none"
+          value={project.progress || ""}
+          onChange={(e) =>
+            setProgress({ ...progress, [project.id]: e.target.value })
+          }
+        />
+
+        <button
+          onClick={() => handleUpdateProgress(project.id)}
+          className="mt-2 bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg text-sm"
+        >
+          Save Progress
+        </button>
+      </div>
+
+      {/* ================= SUBMISSION SECTION ================= */}
+      <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <h4 className="text-sm text-green-400 mb-2">
+          Submit Work
+        </h4>
+
+        <textarea
+          placeholder="Paste GitHub / Drive link..."
+          className="w-full bg-white/10 p-3 rounded-lg text-sm outline-none"
+          value={project.submission || ""}
+          onChange={(e) =>
+            setSubmission({ ...submission, [project.id]: e.target.value })
+          }
+        />
+
+        <button
+          onClick={() => handleSubmitWork(project.id)}
+          className="mt-2 bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-sm"
+        >
+          Submit Project
+        </button>
+      </div>
+
+    </div>
+  ))}
+</div>
       </div>
     </div>
   );
