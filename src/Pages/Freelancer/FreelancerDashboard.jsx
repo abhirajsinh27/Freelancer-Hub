@@ -4,9 +4,11 @@ import { createBid, listenBidsByFreelancer } from "../../Services/bidService";
 import ProjectCard from "../../Components/ProjectCard";
 import Header from "../../Components/Header";
 import { useAuth } from "../../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function FreelancerDashboard() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [projects, setProjects] = useState([]);
   const [myBids, setMyBids] = useState([]);
@@ -72,7 +74,7 @@ function FreelancerDashboard() {
             const isBid = myBids.some((bid) => bid.projectId === project.id);
 
             return (
-              <ProjectCard
+              <ProjectCard 
                 key={project.id}
                 title={project.title}
                 budget={project.budget}
@@ -80,6 +82,7 @@ function FreelancerDashboard() {
                 isBid={isBid}
                 deadline={project.deadline}
                 onBid={() => handleBid(project)}
+                onViewDetails={() => navigate(`/freelancer/project/${project.id}`)}
               />
             );
           })

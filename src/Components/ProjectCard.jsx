@@ -8,6 +8,7 @@ function ProjectCard({
   hasBids = false,
   onBid,
   onViewBids,
+  onViewDetails,
   deadline,
   proposalTime,
 }) {
@@ -64,6 +65,10 @@ function ProjectCard({
       <div className="flex justify-end">
         {/* FREELANCER VIEW */}
         {user?.role === "freelancer" && (
+          <>
+          <button
+            onClick={onViewDetails}
+            className="bg-linear-to-r from-slate-600 to-slate-700 text-white px-6 py-2 rounded-xl shadow-md hover:scale-105 hover:shadow-slate-500/40 transition duration-200 mr-4" > View Details </button> 
           <button
             disabled={isBid}
             onClick={onBid}
@@ -75,7 +80,8 @@ function ProjectCard({
           >
             {isBid ? "Bid Placed" : "Place Bid"}
           </button>
-        )}
+        </>
+      )}
 
         {/* CLIENT VIEW */}
         {user?.role === "client" && (

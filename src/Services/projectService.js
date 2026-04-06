@@ -6,6 +6,7 @@ import {
   serverTimestamp,
   doc,
   updateDoc,
+  getDoc,
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
@@ -84,4 +85,13 @@ export const listenAssignedProjects = (freelancerId, callback) => {
 export const updateProjectStatus = async (projectId, data) => {
   const projectRef = doc(db, "projects", projectId);
   await updateDoc(projectRef, data);
+};
+
+/* ===============================
+   GET SINGLE PROJECT
+================================= */
+export const getProjectById = async (projectId) => {
+  const projectRef = doc(db, "projects", projectId);
+  const projectSnap = await getDoc(projectRef);
+  return projectSnap.exists() ? { id: projectSnap.id, ...projectSnap.data() } : null;
 };

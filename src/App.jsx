@@ -13,6 +13,7 @@ import AssignedProjects from "./Pages/Freelancer/AssignedProjects";
 import Profile from "./Components/profile";
 import TrackProjects from "./Pages/Client/TrackProjects";
 import Allbids from "./Pages/Client/Allbids";
+import ProjectDetails from "./Pages/Freelancer/ProjectDetails";
 
 function App() {
   return (
@@ -83,7 +84,15 @@ function App() {
           </ProtectedRoute>
         }
       />
-        <Route
+      <Route
+        path="/freelancer/project/:projectId"
+        element={
+          <ProtectedRoute>
+            <ProjectDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path ="/freelancer/my-bids"
         element={
           <ProtectedRoute>

@@ -45,6 +45,10 @@ function AssignedProjects() {
         </h2>
 
         <div className="space-y-6">
+          {projects.length === 0 ? (
+            <p className=" text-white/80">No assigned projects yet.</p>
+          ) : (
+          <div>
           {projects.map((project) => (
             <div
               key={project.id}
@@ -136,6 +140,7 @@ function AssignedProjects() {
               </div>
             </div>
           ))}
+          </div> )}
         </div>
       </div>
     </div>
