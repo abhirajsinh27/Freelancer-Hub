@@ -34,12 +34,14 @@ function FreelancerDashboard() {
 
   const handleBid = async (project) => {
     try {
+      console.log(project);
       await createBid({
         projectId: project.id,
         freelancerId: user.uid,
         freelancerName: user.username,
         clientId: project.clientId,
         clientName: project.clientName,
+        projecttitle: project.title,
         proposalTime: 5,
         bidAmount: project.budget,
       });

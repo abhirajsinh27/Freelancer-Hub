@@ -12,6 +12,7 @@ import MyBids from "./Pages/Freelancer/MyBids";
 import AssignedProjects from "./Pages/Freelancer/AssignedProjects";
 import Profile from "./Components/profile";
 import TrackProjects from "./Pages/Client/TrackProjects";
+import Allbids from "./Pages/Client/Allbids";
 
 function App() {
   return (
@@ -53,6 +54,14 @@ function App() {
         element={
           <ProtectedRoute>
             <PostProject />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/client/client-bids"
+        element={
+          <ProtectedRoute>
+            <Allbids />
           </ProtectedRoute>
         }
       />

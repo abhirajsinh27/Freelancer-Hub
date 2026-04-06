@@ -5,7 +5,7 @@ function RoleRedirect() {
   const { user,loading } = useAuth();
 
   if (loading) {
-    return <div>Loading authentication...</div>;
+    return <div className="bg-slate-900 text-white p-4  ">Loading authentication...</div>;
   }
 
   if (!user) {
@@ -14,7 +14,7 @@ function RoleRedirect() {
 
   // Role still loading
   if (user?.role === undefined) {
-    return <div>Loading role...</div>;
+    return <div className="bg-slate-900 text-white p-4  ">Loading role...</div>;
   }
 
   if (user?.role === "client") {

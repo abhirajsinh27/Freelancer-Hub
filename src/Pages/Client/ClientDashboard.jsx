@@ -67,19 +67,11 @@ function ClientDashboard() {
             </h3>
           </div>
         </div>
-
         {/* Heading + Button Row */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <h2 className="text-3xl font-bold text-white tracking-tight">
             My Projects
           </h2>
-
-          <Link
-            to="/client/post-project"
-            className="bg-linear-to-r from-emerald-500 to-green-600 text-white px-6 py-3 rounded-xl shadow-lg hover:scale-105 hover:shadow-green-500/40 transition duration-200"
-          >
-            + Post New Project
-          </Link>
         </div>
 
         {/* Projects List */}

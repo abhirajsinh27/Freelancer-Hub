@@ -16,6 +16,8 @@ import { db } from "../firebase/firebase";
 export const createBid = async (bidData) => {
   return await addDoc(collection(db, "bids"), {
     ...bidData,
+    clientId: bidData.clientId,
+    projecttitle: bidData.projecttitle,
     status: "pending",
     createdAt: serverTimestamp(),
   });
@@ -30,6 +32,21 @@ export const listenBidsByProject = (projectId, callback) => {
   const q = query(
     collection(db, "bids"),
     where("projectId", "==", projectId)
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const bids = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    callback(bids);
+  });
+};
+export const listenBidsByClient = (clientId, callback) => {
+  const q = query(
+    collection(db, "bids"),
+    where("clientId", "==", clientId)
   );
 
   return onSnapshot(q, (snapshot) => {
