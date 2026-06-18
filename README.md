@@ -195,25 +195,6 @@ Through this project, I gained practical experience in:
 
 ---
 
-## 📸 Screenshots
-
-### Home Page
-_Add Screenshot Here_
-
-### Client Dashboard
-_Add Screenshot Here_
-
-### Freelancer Dashboard
-_Add Screenshot Here_
-
-### Project Details Page
-_Add Screenshot Here_
-
-### Proposal Management
-_Add Screenshot Here_
-
----
-
 ## 🔮 Future Enhancements
 
 - Real-Time Chat System
