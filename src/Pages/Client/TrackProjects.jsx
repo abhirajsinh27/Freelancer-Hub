@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../Components/Header";
 import { listenProjectsByClient, updateProjectStatus } from "../../Services/projectService";
+import { updateBidProjectStatusByProject } from "../../Services/bidService";
 import { useAuth } from "../../Context/AuthContext";
 import toast from "react-hot-toast";
 import EmptyState from "../../Components/EmptyState";
@@ -36,6 +37,7 @@ function TrackProjects() {
       await updateProjectStatus(projectId, {
         status: "completed",
       });
+      await updateBidProjectStatusByProject(projectId, "completed");
       toast.success("Project marked as completed! Payment contract released.", { id: toastId });
     } catch (err) {
       console.error("Error completing project:", err);

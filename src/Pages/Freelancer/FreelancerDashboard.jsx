@@ -64,6 +64,14 @@ function FreelancerDashboard() {
 
   const acceptedBids = myBids.filter((b) => b.status === "accepted");
 
+  const assignedProjectsCount = acceptedBids.filter(
+    (b) => b.projectStatus !== "completed"
+  ).length;
+
+  const completedProjectsCount = acceptedBids.filter(
+    (b) => b.projectStatus === "completed"
+  ).length;
+
   const acceptanceRate =
     appliedCount > 0
       ? Math.round((acceptedBids.length / appliedCount) * 100)
@@ -226,7 +234,7 @@ function FreelancerDashboard() {
                   </div>
                 </div>
                 <h3 className="text-3xl font-extrabold text-white tracking-tight">
-                  {acceptedBids.length}
+                  {assignedProjectsCount}
                 </h3>
               </div>
 
@@ -241,11 +249,7 @@ function FreelancerDashboard() {
                   </div>
                 </div>
                 <h3 className="text-3xl font-extrabold text-white tracking-tight">
-                  {/* Estimating from accepted bids where status of project is checked */}
-                  {
-                    acceptedBids.filter((b) => b.projectStatus === "completed")
-                      .length
-                  }
+                  {completedProjectsCount}
                 </h3>
               </div>
 

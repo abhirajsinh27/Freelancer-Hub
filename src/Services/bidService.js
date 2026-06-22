@@ -7,6 +7,7 @@ import {
   doc,
   updateDoc,
   onSnapshot,
+  getDocs,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 
@@ -82,4 +83,23 @@ export const listenBidsByFreelancer = (freelancerId, callback) => {
 export const updateBidStatus = async (bidId, newStatus) => {
   const bidRef = doc(db, "bids", bidId);
   await updateDoc(bidRef, { status: newStatus });
+};
+
+/* ===============================
+   UPDATE BID PROJECT STATUS
+================================= */
+export const updateBidProjectStatusByProject = async (projectId, projectStatus) => {
+  const q = query(
+    collection(db, "bids"),
+    where("projectId", "==", projectId),
+    where("status", "==", "accepted")
+  );
+
+  const querySnapshot = await getDocs(q);
+  const updatePromises = querySnapshot.docs.map((docSnap) => {
+    const bidRef = doc(db, "bids", docSnap.id);
+    return updateDoc(bidRef, { projectStatus });
+  });
+
+  await Promise.all(updatePromises);
 };
