@@ -4,7 +4,7 @@ import { createBid, listenBidsByFreelancer } from "../../Services/bidService";
 import ProjectCard from "../../Components/ProjectCard";
 import Header from "../../Components/Header";
 import { useAuth } from "../../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import EmptyState from "../../Components/EmptyState";
 import toast from "react-hot-toast";
 import {
@@ -18,7 +18,6 @@ import {
   PlusCircle,
   ArrowRight,
   X,
-  Link,
 } from "lucide-react";
 
 function FreelancerDashboard() {
