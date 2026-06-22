@@ -62,31 +62,12 @@ function FreelancerDashboard() {
   // Statistics
   const appliedCount = myBids.length;
 
-  // Assigned projects: we listen to bids accepted or count status
-  // We can also query projects assigned to this user that are in progress
-  // Since we don't listen to assigned projects in dashboard, we can calculate active assigned
-  // from our bids: an accepted bid means project is in-progress / completed.
-  // Let's retrieve matching assigned projects:
   const acceptedBids = myBids.filter((b) => b.status === "accepted");
 
-  // For the exact stats, we'll calculate:
-  // - Applied: total proposals submitted
-  // - Assigned: bids accepted and project status is in-progress (open projects won't appear, status changes to in-progress when accepted)
-  // - Completed: bids accepted and project is completed.
-  // Wait, since bids only store the bid status, how do we track if the project itself is completed?
-  // We can fetch projects assigned to the freelancer!
-  // To keep it simple and real-time on dashboard, we can count:
-  // Assigned = acceptedBids.length
-  // Acceptance rate = (acceptedBids.length / (appliedCount || 1)) * 100
   const acceptanceRate =
     appliedCount > 0
       ? Math.round((acceptedBids.length / appliedCount) * 100)
       : 0;
-
-  // Let's query assigned projects in progress to be 100% accurate:
-  // We can fetch or estimate. Estimating is good, but let's make it robust!
-  // We can count active contracts and completed contracts.
-  // Since freelancer can see active contracts under AssignedProjects, let's display counts.
 
   // Modal opening
   const openBidModal = (project) => {

@@ -1,6 +1,12 @@
 import React from "react";
 import { useAuth } from "../Context/AuthContext";
-import { Calendar, DollarSign, MessageSquare, Clock, ArrowRight } from "lucide-react";
+import {
+  Calendar,
+  DollarSign,
+  MessageSquare,
+  Clock,
+  ArrowRight,
+} from "lucide-react";
 
 function ProjectCard({
   title,
@@ -24,12 +30,20 @@ function ProjectCard({
   const getFormattedDate = () => {
     if (!createdAt) return "Just now";
     try {
-      const dateObj = createdAt.toDate ? createdAt.toDate() : new Date(createdAt);
-      return dateObj.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+      const dateObj = createdAt.toDate
+        ? createdAt.toDate()
+        : new Date(createdAt);
+      return dateObj.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
     } catch (e) {
       return "Recently";
     }
   };
+
+  const isExpired = deadline && new Date(deadline) < new Date();
 
   return (
     <div className="group bg-slate-900/40 border border-slate-800/80 hover:border-indigo-500/30 rounded-2xl p-6 shadow-soft hover:shadow-glow-primary hover:-translate-y-0.5 transition-all duration-300 glass-panel">
@@ -55,7 +69,9 @@ function ProjectCard({
             </span>
           ))
         ) : (
-          <span className="text-slate-500 text-xs font-light italic">No skills listed</span>
+          <span className="text-slate-500 text-xs font-light italic">
+            No skills listed
+          </span>
         )}
       </div>
 
@@ -65,17 +81,25 @@ function ProjectCard({
           <Clock className="w-3.5 h-3.5 text-slate-500" />
           <span>Posted: {getFormattedDate()}</span>
         </span>
-        
+
         <span className="flex items-center gap-1.5">
           <MessageSquare className="w-3.5 h-3.5 text-slate-500" />
-          <span>{proposalCount} {proposalCount === 1 ? "proposal" : "proposals"}</span>
+          <span>
+            {proposalCount} {proposalCount === 1 ? "proposal" : "proposals"}
+          </span>
         </span>
 
         {deadline && (
-          <span className="flex items-center gap-1.5 col-span-2 sm:col-span-1">
+          <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
             <Calendar className="w-3.5 h-3.5 text-rose-500/60" />
             <span className="text-slate-300">Deadline: {deadline}</span>
-          </span>
+
+            {isExpired && (
+              <span className="bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded text-[9px] uppercase font-bold">
+                Expired
+              </span>
+            )}
+          </div>
         )}
 
         <span
@@ -83,8 +107,8 @@ function ProjectCard({
             status === "completed"
               ? "bg-green-500/10 border-green-500/20 text-green-400"
               : status === "in-progress"
-              ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-400"
-              : "bg-slate-900 border-slate-800 text-slate-400"
+                ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-400"
+                : "bg-slate-900 border-slate-800 text-slate-400"
           }`}
         >
           {status}
@@ -102,8 +126,8 @@ function ProjectCard({
             status === "completed"
               ? "bg-green-500/10 border-green-500/20 text-green-400"
               : status === "in-progress"
-              ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-400"
-              : "bg-slate-900 border-slate-800 text-slate-400"
+                ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-400"
+                : "bg-slate-900 border-slate-800 text-slate-400"
           }`}
         >
           {status}
@@ -123,7 +147,7 @@ function ProjectCard({
               )}
               {status === "open" && onBid && (
                 <button
-                  disabled={isBid}
+                  disabled={isBid || isExpired}
                   onClick={onBid}
                   className={`px-4.5 py-2 text-xs font-bold rounded-xl shadow-md transition active:scale-[0.97] flex items-center gap-1 ${
                     isBid
@@ -131,7 +155,15 @@ function ProjectCard({
                       : "bg-indigo-600 hover:bg-indigo-500 text-white"
                   }`}
                 >
-                  {isBid ? "Bid Placed" : <>Apply Now <ArrowRight className="w-3.5 h-3.5" /></>}
+                  {isExpired ? (
+                    "Expired"
+                  ) : isBid ? (
+                    "Bid Placed"
+                  ) : (
+                    <>
+                      Apply Now <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
                 </button>
               )}
             </>
@@ -148,7 +180,9 @@ function ProjectCard({
                   : "bg-slate-805 text-slate-500 border border-slate-850 cursor-not-allowed"
               }`}
             >
-              {hasBids ? `View Proposals (${proposalCount})` : "No Proposals Yet"}
+              {hasBids
+                ? `View Proposals (${proposalCount})`
+                : "No Proposals Yet"}
             </button>
           )}
         </div>
