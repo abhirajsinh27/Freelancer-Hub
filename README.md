@@ -186,8 +186,8 @@ No page refresh is required when data changes.
 ### Post Project
 ![Post Project](./screenshots/post-project.png)
 
-### Browse Projects
-![Browse Projects](./screenshots/browse-projects.png)
+### Track Projects
+![Browse Projects](./screenshots/track-projects.png)
 
 ### Freelancer Dashboard
 ![Freelancer Dashboard](./screenshots/freelancer-dashboard.png)
