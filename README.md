@@ -174,25 +174,30 @@ No page refresh is required when data changes.
 
 ## 📸 Screenshots
 
-Add screenshots after deployment:
+### Login Page
+![Login](./screenshots/login.png)
 
-### Landing Page
-
-![Landing Page](screenshots/home.png)
+### Register Page
+![Register](./screenshots/register.png)
 
 ### Client Dashboard
+![Client Dashboard](./screenshots/client-dashboard.png)
 
-![Client Dashboard](screenshots/client-dashboard.png)
+### Post Project
+![Post Project](./screenshots/post-project.png)
+
+### Browse Projects
+![Browse Projects](./screenshots/browse-projects.png)
 
 ### Freelancer Dashboard
+![Freelancer Dashboard](./screenshots/freelancer-dashboard.png)
 
-![Freelancer Dashboard](screenshots/freelancer-dashboard.png)
+### Assigned Projects
+![Assigned Projects](./screenshots/assigned-projects.png)
 
 ---
 
 ## 🚀 Live Demo
-
-Add after deployment:
 
 ```text
 https://your-app.vercel.app
