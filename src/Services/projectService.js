@@ -63,8 +63,7 @@ export const listenAllProjects = (callback) => {
 export const listenAssignedProjects = (freelancerId, callback) => {
   const q = query(
     collection(db, "projects"),
-    where("assignedFreelancerId", "==", freelancerId),
-    where("status", "==", "in-progress")
+    where("assignedFreelancerId", "==", freelancerId)
   );
 
   const unsubscribe = onSnapshot(q, (snapshot) => {

@@ -14,16 +14,27 @@ import Profile from "./Components/profile";
 import TrackProjects from "./Pages/Client/TrackProjects";
 import Allbids from "./Pages/Client/Allbids";
 import ProjectDetails from "./Pages/Freelancer/ProjectDetails";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-
-      {/* After Login */}
-      <Route path="/" element={<RoleRedirect />} />
+    <>
+      <Toaster 
+        position="top-right" 
+        toastOptions={{ 
+          style: { 
+            background: '#1E293B', 
+            color: '#F8FAFC', 
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '12px',
+          } 
+        }} 
+      />
+      <Routes>
+        {/* Entry Point */}
+        <Route path="/" element={<RoleRedirect />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
       <Route
         path="/profile"
         element={
@@ -108,7 +119,8 @@ function App() {
           </ProtectedRoute>
         }
        />
-    </Routes>
+      </Routes>
+    </>
   );
 }
 
